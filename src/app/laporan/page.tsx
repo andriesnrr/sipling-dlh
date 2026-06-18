@@ -61,7 +61,7 @@ export default async function LaporanPage() {
     <>
       <Header />
       <LaporanDashboardClient initialReports={mappedReports} citizenName={session.user?.name || "Masyarakat"} />
-      <Footer />
+      <Footer role={(session?.user as any)?.role} />
     </>
   );
 }

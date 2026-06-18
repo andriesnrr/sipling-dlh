@@ -99,7 +99,7 @@ export default function AdminDashboardClient({ initialLaporan, adminName }: Admi
         </div>
       </header>
 
-      <main className="pt-24 pb-16 px-[var(--spacing-margin-mobile)] md:px-[var(--spacing-margin-desktop)]">
+      <main className="pt-24 pb-28 md:pb-16 px-[var(--spacing-margin-mobile)] md:px-[var(--spacing-margin-desktop)]">
         <div className="container mx-auto max-w-[1200px] space-y-8">
           
           {/* Dashboard Header */}

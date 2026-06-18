@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import LacakDashboardClient from './LacakDashboardClient';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { auth } from '@/lib/auth';
 
 // Helper to mask names for citizen privacy (e.g. "John Doe" -> "J**n D*e")
 function maskName(name: string) {
@@ -16,6 +17,8 @@ function maskName(name: string) {
 export const dynamic = 'force-dynamic';
 
 export default async function LacakPage() {
+  const session = await auth();
+
   // Fetch all reports to be searchable/trackable publicly
   const reports = await prisma.siplingLaporan.findMany({
     include: {
@@ -65,7 +68,7 @@ export default async function LacakPage() {
     <>
       <Header />
       <LacakDashboardClient initialReports={mappedReports} />
-      <Footer />
+      <Footer role={(session?.user as any)?.role} />
     </>
   );
 }

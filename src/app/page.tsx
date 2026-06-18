@@ -3,6 +3,7 @@ import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +46,8 @@ function formatRelativeTime(date: Date) {
 }
 
 export default async function Home() {
+  const session = await auth();
+
   // Fetch statistics from PostgreSQL database
   const totalLaporan = await prisma.siplingLaporan.count();
   const laporanSelesai = await prisma.siplingLaporan.count({ where: { status: "Selesai" } });
@@ -84,7 +87,7 @@ export default async function Home() {
       <Header />
       <main className="pt-16 pb-24 md:pb-0">
         {/* Hero Section */}
-        <section className="relative min-h-[751px] flex items-center overflow-hidden bg-[var(--color-surface-container-low)] px-[var(--spacing-margin-mobile)] md:px-[var(--spacing-margin-desktop)]">
+        <section className="relative min-h-0 py-12 lg:py-0 lg:min-h-[751px] flex items-center overflow-hidden bg-[var(--color-surface-container-low)] px-[var(--spacing-margin-mobile)] md:px-[var(--spacing-margin-desktop)]">
           <div className="container mx-auto max-w-[1200px] relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed)] px-4 py-1 rounded-full text-[14px] leading-[20px] font-semibold font-[family-name:var(--font-inter)]">
@@ -157,7 +160,7 @@ export default async function Home() {
                   <p className="text-[24px] leading-[32px] font-bold text-[var(--color-on-surface)]">
                     {laporanDiproses.toLocaleString('id-ID')}
                   </p>
-                  <p className="text-[var(--color-on-surface-variant)] text-[14px] leading-[20px]">Laporan Diproses</p>
+                  <p className="text(--color-on-surface-variant) text-[14px] leading-[20px]">Laporan Diproses</p>
                 </div>
               </div>
               <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-xl shadow-sm border border-[var(--color-outline-variant)] flex flex-col justify-between h-40 hover:shadow-md transition-shadow">
@@ -315,7 +318,7 @@ export default async function Home() {
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer role={(session?.user as any)?.role} />
     </>
   );
 }

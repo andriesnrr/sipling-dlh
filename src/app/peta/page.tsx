@@ -2,10 +2,13 @@ import { prisma } from '@/lib/prisma';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PetaClient from './PetaClient';
+import { auth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export default async function PetaPage() {
+  const session = await auth();
+
   // Fetch all reports to show on the map
   const reports = await prisma.siplingLaporan.findMany({
     orderBy: { createdAt: 'desc' },
@@ -72,7 +75,7 @@ export default async function PetaPage() {
     <>
       <Header />
       <PetaClient initialReports={mappedReports} />
-      <Footer />
+      <Footer role={(session?.user as any)?.role} />
     </>
   );
 }
