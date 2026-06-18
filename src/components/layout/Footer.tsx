@@ -25,10 +25,10 @@ export default function Footer() {
           <div>
             <h4 className="text-[14px] leading-[20px] font-bold mb-6 font-[family-name:var(--font-inter)]">Tautan Cepat</h4>
             <ul className="space-y-4 text-[14px] leading-[20px] opacity-70 font-[family-name:var(--font-inter)]">
-              <li><Link href="/bantuan" className="hover:text-[var(--color-primary-fixed-dim)] transition-colors">Cara Melapor</Link></li>
-              <li><Link href="/peta" className="hover:text-[var(--color-primary-fixed-dim)] transition-colors">Peta Sebaran Laporan</Link></li>
-              <li><Link href="/statistik" className="hover:text-[var(--color-primary-fixed-dim)] transition-colors">Statistik Layanan</Link></li>
-              <li><Link href="/bantuan" className="hover:text-[var(--color-primary-fixed-dim)] transition-colors">Pusat Bantuan</Link></li>
+              <li><Link href="#" className="hover:text-[var(--color-primary-fixed-dim)] transition-colors">Cara Melapor</Link></li>
+              <li><Link href="#" className="hover:text-[var(--color-primary-fixed-dim)] transition-colors">Peta Sebaran Laporan</Link></li>
+              <li><Link href="#" className="hover:text-[var(--color-primary-fixed-dim)] transition-colors">Statistik Layanan</Link></li>
+              <li><Link href="#" className="hover:text-[var(--color-primary-fixed-dim)] transition-colors">Pusat Bantuan</Link></li>
             </ul>
           </div>
           <div>
@@ -64,11 +64,11 @@ export default function Footer() {
           <span className="material-symbols-outlined">assignment</span>
           <span className="text-[12px] leading-[16px] font-medium font-[family-name:var(--font-inter)]">Laporan</span>
         </Link>
-        <Link href="/peta" className="flex flex-col items-center justify-center text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-variant)]/50 rounded-full px-4 py-1 active:scale-95 duration-200">
+        <Link href="#" className="flex flex-col items-center justify-center text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-variant)]/50 rounded-full px-4 py-1 active:scale-95 duration-200">
           <span className="material-symbols-outlined">map</span>
           <span className="text-[12px] leading-[16px] font-medium font-[family-name:var(--font-inter)]">Peta</span>
         </Link>
-        <Link href="/profil" className="flex flex-col items-center justify-center text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-variant)]/50 rounded-full px-4 py-1 active:scale-95 duration-200">
+        <Link href="#" className="flex flex-col items-center justify-center text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-variant)]/50 rounded-full px-4 py-1 active:scale-95 duration-200">
           <span className="material-symbols-outlined">person</span>
           <span className="text-[12px] leading-[16px] font-medium font-[family-name:var(--font-inter)]">Profil</span>
         </Link>
