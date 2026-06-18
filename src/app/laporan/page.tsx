@@ -14,6 +14,10 @@ export default async function LaporanPage() {
     redirect('/auth');
   }
 
+  if ((session.user as any).role === 'ADMIN') {
+    redirect('/admin');
+  }
+
   const userId = (session.user as any).id;
 
   // Fetch only the reports submitted by the logged-in user
@@ -61,7 +65,7 @@ export default async function LaporanPage() {
     <>
       <Header />
       <LaporanDashboardClient initialReports={mappedReports} citizenName={session.user?.name || "Masyarakat"} />
-      <Footer role={(session?.user as any)?.role} />
+      <Footer role={(session?.user as any)?.role || "GUEST"} />
     </>
   );
 }

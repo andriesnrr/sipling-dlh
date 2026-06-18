@@ -24,30 +24,9 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const isLaporanPath = nextUrl.pathname.startsWith('/laporan');
       const isAdminPath = nextUrl.pathname.startsWith('/admin');
-      const isAuthPage = nextUrl.pathname === '/auth';
 
-      if (isLaporanPath) {
-        if (!isLoggedIn) return false; // Automatically redirects to /auth
-        const userRole = (auth?.user as any)?.role;
-        if (userRole === 'ADMIN') {
-          return NextResponse.redirect(new URL('/admin', nextUrl));
-        }
-      }
-
-      if (isAdminPath) {
-        if (!isLoggedIn) return false; // Automatically redirects to /auth
-        const userRole = (auth?.user as any)?.role;
-        if (userRole !== 'ADMIN') {
-          return NextResponse.redirect(new URL('/', nextUrl));
-        }
-      }
-
-      if (isAuthPage && isLoggedIn) {
-        const userRole = (auth?.user as any)?.role;
-        if (userRole === 'ADMIN') {
-          return NextResponse.redirect(new URL('/admin', nextUrl));
-        }
-        return NextResponse.redirect(new URL('/', nextUrl));
+      if ((isLaporanPath || isAdminPath) && !isLoggedIn) {
+        return false; // Automatically redirects to signIn page (/auth)
       }
 
       return true;

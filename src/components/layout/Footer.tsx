@@ -4,13 +4,30 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
-export default function Footer() {
+interface FooterProps {
+  role?: string;
+}
+
+export default function Footer({ role }: FooterProps) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const [userRole, setUserRole] = useState<string | undefined>(role);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (role) {
+      localStorage.setItem("sipling_user_role", role);
+      setUserRole(role);
+    } else {
+      const savedRole = localStorage.getItem("sipling_user_role");
+      if (savedRole) {
+        setUserRole(savedRole);
+      }
+    }
+  }, [role]);
 
   const handlePlaceholderClick = (e: React.MouseEvent, featureName: string) => {
     e.preventDefault();
@@ -107,13 +124,18 @@ export default function Footer() {
           );
         })()}
         {(() => {
-          const laporanStyle = getTabStyle("/laporan");
+          const isAdmin = userRole === "ADMIN";
+          const tabPath = isAdmin ? "/admin" : "/laporan";
+          const tabLabel = isAdmin ? "Admin" : "Laporan";
+          const tabIcon = isAdmin ? "account_balance" : "assignment";
+
+          const laporanStyle = getTabStyle(tabPath);
           return (
-            <Link href="/laporan" className={laporanStyle.container}>
+            <Link href={tabPath} className={laporanStyle.container}>
               <div className={laporanStyle.iconWrapper}>
-                <span className="material-symbols-outlined">assignment</span>
+                <span className="material-symbols-outlined">{tabIcon}</span>
               </div>
-              <span className={laporanStyle.label}>Laporan</span>
+              <span className={laporanStyle.label}>{tabLabel}</span>
             </Link>
           );
         })()}

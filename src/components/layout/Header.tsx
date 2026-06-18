@@ -21,6 +21,9 @@ export default async function Header() {
           <Link href="/lacak" className="text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-variant)] transition-colors px-3 py-2 rounded-lg text-[14px] leading-[20px] font-[family-name:var(--font-inter)] font-semibold">
             Lacak Laporan
           </Link>
+          <Link href="/peta" className="text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-variant)] transition-colors px-3 py-2 rounded-lg text-[14px] leading-[20px] font-[family-name:var(--font-inter)] font-semibold">
+            Peta Sebaran
+          </Link>
           {isLoggedIn && (
             <>
               {!isAdmin && (
@@ -38,14 +41,22 @@ export default async function Header() {
                   Admin Panel
                 </Link>
               )}
+              <Link href="/profil" className="text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-variant)] transition-colors px-3 py-2 rounded-lg text-[14px] leading-[20px] font-[family-name:var(--font-inter)] font-semibold">
+                Profil Saya
+              </Link>
             </>
           )}
         </nav>
         <div className="flex items-center gap-3">
           {isLoggedIn && (
-            <span className="hidden lg:inline text-[13px] font-semibold text-[var(--color-on-surface-variant)] bg-[var(--color-surface-variant)]/60 px-3 py-1.5 rounded-lg">
+            <Link 
+              href="/profil" 
+              className="hidden lg:flex items-center gap-1.5 text-[13px] font-bold text-[var(--color-on-surface-variant)] bg-[var(--color-surface-variant)]/60 hover:bg-[var(--color-surface-variant)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/20 transition-all px-3 py-1.5 rounded-lg border border-transparent cursor-pointer"
+              title="Buka Profil Saya"
+            >
+              <span className="material-symbols-outlined text-[16px]">account_circle</span>
               {session?.user?.name}
-            </span>
+            </Link>
           )}
           {isLoggedIn ? (
             <LogoutButton />

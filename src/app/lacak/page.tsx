@@ -68,7 +68,7 @@ export default async function LacakPage() {
     <>
       <Header />
       <LacakDashboardClient initialReports={mappedReports} />
-      <Footer role={(session?.user as any)?.role} />
+      <Footer role={(session?.user as any)?.role || "GUEST"} />
     </>
   );
 }

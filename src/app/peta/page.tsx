@@ -75,7 +75,7 @@ export default async function PetaPage() {
     <>
       <Header />
       <PetaClient initialReports={mappedReports} />
-      <Footer role={(session?.user as any)?.role} />
+      <Footer role={(session?.user as any)?.role || "GUEST"} />
     </>
   );
 }

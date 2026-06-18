@@ -101,10 +101,17 @@ export default async function Home() {
                 Platform resmi Dinas Lingkungan Hidup untuk menerima dan menindaklanjuti laporan masyarakat demi lingkungan yang lebih asri dan berkelanjutan.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Link href="/laporan/buat" className="bg-[var(--color-primary)] text-[var(--color-on-primary)] px-8 py-4 rounded-xl text-[14px] leading-[20px] font-semibold flex items-center justify-center gap-2 hover:bg-[var(--color-primary-container)] transition-all active:scale-95 shadow-lg">
-                  <span className="material-symbols-outlined">add_circle</span>
-                  Buat Laporan
-                </Link>
+                {(session?.user as any)?.role === "ADMIN" ? (
+                  <Link href="/admin" className="bg-[var(--color-primary)] text-[var(--color-on-primary)] px-8 py-4 rounded-xl text-[14px] leading-[20px] font-semibold flex items-center justify-center gap-2 hover:bg-[var(--color-primary-container)] transition-all active:scale-95 shadow-lg">
+                    <span className="material-symbols-outlined">dashboard</span>
+                    Dashboard Admin
+                  </Link>
+                ) : (
+                  <Link href="/laporan/buat" className="bg-[var(--color-primary)] text-[var(--color-on-primary)] px-8 py-4 rounded-xl text-[14px] leading-[20px] font-semibold flex items-center justify-center gap-2 hover:bg-[var(--color-primary-container)] transition-all active:scale-95 shadow-lg">
+                    <span className="material-symbols-outlined">add_circle</span>
+                    Buat Laporan
+                  </Link>
+                )}
                 <Link href="/lacak" className="border-2 border-[var(--color-primary)] text-[var(--color-primary)] px-8 py-4 rounded-xl text-[14px] leading-[20px] font-semibold flex items-center justify-center gap-2 hover:bg-[var(--color-primary)]/5 transition-all active:scale-95">
                   <span className="material-symbols-outlined">search</span>
                   Lacak Laporan
@@ -310,15 +317,22 @@ export default async function Home() {
             <div className="relative z-10">
               <h2 className="text-[32px] leading-[40px] font-bold mb-4 font-[family-name:var(--font-plus-jakarta-sans)]">Mari Berpartisipasi Jaga Lingkungan</h2>
               <p className="text-[18px] leading-[28px] mb-8 max-w-2xl mx-auto opacity-90 font-[family-name:var(--font-inter)]">Setiap laporan Anda adalah langkah nyata menuju kota yang lebih bersih, sehat, dan nyaman untuk masa depan.</p>
-              <Link href="/laporan/buat" className="bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] px-10 py-4 rounded-xl font-bold hover:bg-[var(--color-surface)] transition-all active:scale-95 shadow-xl inline-flex items-center gap-2">
-                <span className="material-symbols-outlined">add_circle</span>
-                Mulai Laporan Sekarang
-              </Link>
+              {(session?.user as any)?.role === "ADMIN" ? (
+                <Link href="/admin" className="bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] px-10 py-4 rounded-xl font-bold hover:bg-[var(--color-surface)] transition-all active:scale-95 shadow-xl inline-flex items-center gap-2">
+                  <span className="material-symbols-outlined">dashboard</span>
+                  Buka Dashboard Admin
+                </Link>
+              ) : (
+                <Link href="/laporan/buat" className="bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] px-10 py-4 rounded-xl font-bold hover:bg-[var(--color-surface)] transition-all active:scale-95 shadow-xl inline-flex items-center gap-2">
+                  <span className="material-symbols-outlined">add_circle</span>
+                  Mulai Laporan Sekarang
+                </Link>
+              )}
             </div>
           </div>
         </section>
       </main>
-      <Footer role={(session?.user as any)?.role} />
+      <Footer role={(session?.user as any)?.role || "GUEST"} />
     </>
   );
 }

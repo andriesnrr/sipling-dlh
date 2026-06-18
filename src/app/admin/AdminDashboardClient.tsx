@@ -89,7 +89,10 @@ export default function AdminDashboardClient({ initialLaporan, adminName }: Admi
               Halo, <span className="text-[var(--color-primary)] font-bold">{adminName}</span>
             </span>
             <button 
-              onClick={() => signOut({ callbackUrl: "/auth" })}
+              onClick={() => {
+                localStorage.removeItem("sipling_user_role");
+                signOut({ callbackUrl: "/auth" });
+              }}
               className="flex items-center gap-1 bg-[var(--color-error)]/10 text-[var(--color-error)] hover:bg-[var(--color-error)] hover:text-white transition-all px-4 py-2 rounded-xl text-[14px] leading-[20px] font-semibold active:scale-95"
             >
               <span className="material-symbols-outlined text-[18px]">logout</span>
@@ -184,121 +187,227 @@ export default function AdminDashboardClient({ initialLaporan, adminName }: Admi
                 <p className="text-[14px] text-[var(--color-on-surface-variant)] opacity-70">Coba ganti filter atau kata kunci pencarian Anda.</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b border-[var(--color-outline-variant)] bg-[var(--color-surface-bright)]">
-                      <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Tanggal & Pelapor</th>
-                      <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Kategori & Deskripsi</th>
-                      <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Lokasi</th>
-                      <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Lampiran</th>
-                      <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Status</th>
-                      <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider text-right">Tindakan</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[var(--color-outline-variant)]">
-                    {filteredLaporan.map((item) => (
-                      <tr key={item.id} className="hover:bg-[var(--color-surface-bright)]/30 transition-colors">
-                        {/* Reporter & Date */}
-                        <td className="p-4 align-top">
-                          <p className="text-[12px] text-[var(--color-on-surface-variant)] mb-1">{item.createdAt}</p>
-                          <p className="font-bold text-[14px] text-[var(--color-on-surface)]">{item.user.name}</p>
-                          <p className="text-[12px] text-[var(--color-on-surface-variant)]">{item.user.email}</p>
-                          {item.user.phone && <p className="text-[12px] text-[var(--color-primary)] font-semibold">{item.user.phone}</p>}
-                        </td>
-
-                        {/* Category & Description */}
-                        <td className="p-4 align-top max-w-sm">
-                          <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[var(--color-primary-container)] text-[var(--color-on-primary-container)] mb-2">
-                            {item.kategori}
-                          </span>
-                          <p className="text-[14px] leading-[22px] text-[var(--color-on-surface)] whitespace-pre-line">{item.deskripsi}</p>
-                        </td>
-
-                        {/* Location */}
-                        <td className="p-4 align-top">
-                          <div className="flex items-start gap-1 text-[13px] leading-[18px]">
-                            <span className="material-symbols-outlined text-[var(--color-primary)] text-[16px] mt-0.5">location_on</span>
-                            <span className="text-[var(--color-on-surface)] font-medium">{item.lokasi}</span>
-                          </div>
-                        </td>
-
-                        {/* Attachments */}
-                        <td className="p-4 align-top">
-                          {item.foto.length === 0 ? (
-                            <span className="text-[12px] text-[var(--color-on-surface-variant)] italic">Tidak ada foto</span>
-                          ) : (
-                            <div className="flex flex-wrap gap-2">
-                              {item.foto.map((url, idx) => (
-                                <div 
-                                  key={idx} 
-                                  onClick={() => setPreviewPhoto(url)}
-                                  className="w-12 h-12 rounded-lg overflow-hidden border border-[var(--color-outline-variant)] shadow-sm cursor-zoom-in hover:opacity-85 transition-opacity bg-black flex items-center justify-center relative"
-                                >
-                                  <img src={url} alt="Attachment" className="object-cover w-full h-full" />
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </td>
-
-                        {/* Status badge */}
-                        <td className="p-4 align-top">
-                          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[12px] font-bold ${
-                            item.status === "Selesai" 
-                              ? "bg-green-500/15 text-green-700" 
-                              : item.status === "Proses" 
-                                ? "bg-blue-500/15 text-blue-700" 
-                                : "bg-yellow-500/15 text-yellow-700"
-                          }`}>
-                            <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
-                            {item.status}
-                          </span>
-                        </td>
-
-                        {/* Action Buttons */}
-                        <td className="p-4 align-top text-right">
-                          <div className="flex justify-end gap-1.5">
-                            {updatingId === item.id ? (
-                              <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin my-1 mx-4"></div>
-                            ) : (
-                              <>
-                                {item.status !== "Verifikasi" && (
-                                  <button
-                                    onClick={() => handleUpdateStatus(item.id, "Verifikasi")}
-                                    className="p-2 bg-[var(--color-surface-variant)] hover:bg-[var(--color-surface-dim)] text-[var(--color-on-surface-variant)] rounded-xl transition-colors active:scale-95"
-                                    title="Set status Verifikasi"
-                                  >
-                                    <span className="material-symbols-outlined text-[18px]">undo</span>
-                                  </button>
-                                )}
-                                {item.status !== "Proses" && (
-                                  <button
-                                    onClick={() => handleUpdateStatus(item.id, "Proses")}
-                                    className="p-2 bg-blue-500/10 hover:bg-blue-500 text-blue-600 hover:text-white rounded-xl transition-colors active:scale-95"
-                                    title="Tindak Lanjuti (Proses)"
-                                  >
-                                    <span className="material-symbols-outlined text-[18px]">engineering</span>
-                                  </button>
-                                )}
-                                {item.status !== "Selesai" && (
-                                  <button
-                                    onClick={() => handleUpdateStatus(item.id, "Selesai")}
-                                    className="p-2 bg-green-500/10 hover:bg-green-500 text-green-600 hover:text-white rounded-xl transition-colors active:scale-95"
-                                    title="Selesaikan Laporan (Selesai)"
-                                  >
-                                    <span className="material-symbols-outlined text-[18px]">check_circle</span>
-                                  </button>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </td>
+              <>
+                {/* Desktop View (Table) */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-[var(--color-outline-variant)] bg-[var(--color-surface-bright)]">
+                        <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Tanggal & Pelapor</th>
+                        <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Kategori & Deskripsi</th>
+                        <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Lokasi</th>
+                        <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Lampiran</th>
+                        <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider">Status</th>
+                        <th className="p-4 text-[13px] font-bold text-[var(--color-on-surface-variant)] tracking-wider text-right">Tindakan</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--color-outline-variant)]">
+                      {filteredLaporan.map((item) => (
+                        <tr key={item.id} className="hover:bg-[var(--color-surface-bright)]/30 transition-colors">
+                          {/* Reporter & Date */}
+                          <td className="p-4 align-top">
+                            <p className="text-[12px] text-[var(--color-on-surface-variant)] mb-1">{item.createdAt}</p>
+                            <p className="font-bold text-[14px] text-[var(--color-on-surface)]">{item.user.name}</p>
+                            <p className="text-[12px] text-[var(--color-on-surface-variant)]">{item.user.email}</p>
+                            {item.user.phone && <p className="text-[12px] text-[var(--color-primary)] font-semibold">{item.user.phone}</p>}
+                          </td>
+
+                          {/* Category & Description */}
+                          <td className="p-4 align-top max-w-sm">
+                            <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[var(--color-primary-container)] text-[var(--color-on-primary-container)] mb-2">
+                              {item.kategori}
+                            </span>
+                            <p className="text-[14px] leading-[22px] text-[var(--color-on-surface)] whitespace-pre-line">{item.deskripsi}</p>
+                          </td>
+
+                          {/* Location */}
+                          <td className="p-4 align-top">
+                            <div className="flex items-start gap-1 text-[13px] leading-[18px]">
+                              <span className="material-symbols-outlined text-[var(--color-primary)] text-[16px] mt-0.5">location_on</span>
+                              <span className="text-[var(--color-on-surface)] font-medium">{item.lokasi}</span>
+                            </div>
+                          </td>
+
+                          {/* Attachments */}
+                          <td className="p-4 align-top">
+                            {item.foto.length === 0 ? (
+                              <span className="text-[12px] text-[var(--color-on-surface-variant)] italic">Tidak ada foto</span>
+                            ) : (
+                              <div className="flex flex-wrap gap-2">
+                                {item.foto.map((url, idx) => (
+                                  <div 
+                                    key={idx} 
+                                    onClick={() => setPreviewPhoto(url)}
+                                    className="w-12 h-12 rounded-lg overflow-hidden border border-[var(--color-outline-variant)] shadow-sm cursor-zoom-in hover:opacity-85 transition-opacity bg-black flex items-center justify-center relative"
+                                  >
+                                    <img src={url} alt="Attachment" className="object-cover w-full h-full" />
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </td>
+
+                          {/* Status badge */}
+                          <td className="p-4 align-top">
+                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[12px] font-bold ${
+                              item.status === "Selesai" 
+                                ? "bg-green-500/15 text-green-700" 
+                                : item.status === "Proses" 
+                                  ? "bg-blue-500/15 text-blue-700" 
+                                  : "bg-yellow-500/15 text-yellow-700"
+                            }`}>
+                              <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
+                              {item.status}
+                            </span>
+                          </td>
+
+                          {/* Action Buttons */}
+                          <td className="p-4 align-top text-right">
+                            <div className="flex justify-end gap-1.5">
+                              {updatingId === item.id ? (
+                                <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin my-1 mx-4"></div>
+                              ) : (
+                                <>
+                                  {item.status !== "Verifikasi" && (
+                                    <button
+                                      onClick={() => handleUpdateStatus(item.id, "Verifikasi")}
+                                      className="p-2 bg-[var(--color-surface-variant)] hover:bg-[var(--color-surface-dim)] text-[var(--color-on-surface-variant)] rounded-xl transition-colors active:scale-95"
+                                      title="Set status Verifikasi"
+                                    >
+                                      <span className="material-symbols-outlined text-[18px]">undo</span>
+                                    </button>
+                                  )}
+                                  {item.status !== "Proses" && (
+                                    <button
+                                      onClick={() => handleUpdateStatus(item.id, "Proses")}
+                                      className="p-2 bg-blue-500/10 hover:bg-blue-500 text-blue-600 hover:text-white rounded-xl transition-colors active:scale-95"
+                                      title="Tindak Lanjuti (Proses)"
+                                    >
+                                      <span className="material-symbols-outlined text-[18px]">engineering</span>
+                                    </button>
+                                  )}
+                                  {item.status !== "Selesai" && (
+                                    <button
+                                      onClick={() => handleUpdateStatus(item.id, "Selesai")}
+                                      className="p-2 bg-green-500/10 hover:bg-green-500 text-green-600 hover:text-white rounded-xl transition-colors active:scale-95"
+                                      title="Selesaikan Laporan (Selesai)"
+                                    >
+                                      <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                                    </button>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile View (Cards) */}
+                <div className="md:hidden divide-y divide-[var(--color-outline-variant)]">
+                  {filteredLaporan.map((item) => (
+                    <div key={item.id} className="p-5 space-y-4">
+                      {/* Header: Category & ID */}
+                      <div className="flex justify-between items-start">
+                        <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[var(--color-primary-container)] text-[var(--color-on-primary-container)]">
+                          {item.kategori}
+                        </span>
+                        <span className="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider bg-[var(--color-surface-variant)] px-2 py-0.5 rounded">
+                          #{item.id.slice(0, 8)}
+                        </span>
+                      </div>
+
+                      {/* Date & Reporter */}
+                      <div className="space-y-0.5 text-[13px]">
+                        <p className="text-[11px] text-[var(--color-on-surface-variant)]">{item.createdAt}</p>
+                        <p className="font-bold text-[var(--color-on-surface)]">{item.user.name}</p>
+                        <p className="text-[12px] text-[var(--color-on-surface-variant)]">{item.user.email}</p>
+                        {item.user.phone && <p className="text-[12px] text-[var(--color-primary)] font-semibold">{item.user.phone}</p>}
+                      </div>
+
+                      {/* Location */}
+                      <div className="flex items-start gap-1 text-[13px] leading-[18px]">
+                        <span className="material-symbols-outlined text-[var(--color-primary)] text-[16px] mt-0.5">location_on</span>
+                        <span className="text-[var(--color-on-surface)] font-semibold">{item.lokasi}</span>
+                      </div>
+
+                      {/* Description */}
+                      <div>
+                        <p className="text-[14px] leading-[22px] text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container-low)] p-3 rounded-xl border border-[var(--color-outline-variant)] whitespace-pre-line">
+                          {item.deskripsi}
+                        </p>
+                      </div>
+
+                      {/* Lampiran Foto */}
+                      {item.foto.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {item.foto.map((url, idx) => (
+                            <div 
+                              key={idx} 
+                              onClick={() => setPreviewPhoto(url)}
+                              className="w-14 h-14 rounded-lg overflow-hidden border border-[var(--color-outline-variant)] shadow-sm cursor-zoom-in hover:opacity-85 transition-opacity bg-black flex items-center justify-center relative"
+                            >
+                              <img src={url} alt="Attachment" className="object-cover w-full h-full" />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Status & Actions */}
+                      <div className="flex justify-between items-center pt-2">
+                        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[12px] font-bold ${
+                          item.status === "Selesai" 
+                            ? "bg-green-500/15 text-green-700" 
+                            : item.status === "Proses" 
+                              ? "bg-blue-500/15 text-blue-700" 
+                              : "bg-yellow-500/15 text-yellow-700"
+                        }`}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
+                          {item.status}
+                        </span>
+
+                        <div className="flex gap-1.5">
+                          {updatingId === item.id ? (
+                            <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin my-1 mx-4"></div>
+                          ) : (
+                            <>
+                              {item.status !== "Verifikasi" && (
+                                <button
+                                  onClick={() => handleUpdateStatus(item.id, "Verifikasi")}
+                                  className="p-2 bg-[var(--color-surface-variant)] hover:bg-[var(--color-surface-dim)] text-[var(--color-on-surface-variant)] rounded-xl transition-colors active:scale-95"
+                                  title="Set status Verifikasi"
+                                >
+                                  <span className="material-symbols-outlined text-[18px]">undo</span>
+                                </button>
+                              )}
+                              {item.status !== "Proses" && (
+                                <button
+                                  onClick={() => handleUpdateStatus(item.id, "Proses")}
+                                  className="p-2 bg-blue-500/10 hover:bg-blue-500 text-blue-600 hover:text-white rounded-xl transition-colors active:scale-95"
+                                  title="Tindak Lanjuti (Proses)"
+                                >
+                                  <span className="material-symbols-outlined text-[18px]">engineering</span>
+                                </button>
+                              )}
+                              {item.status !== "Selesai" && (
+                                <button
+                                  onClick={() => handleUpdateStatus(item.id, "Selesai")}
+                                  className="p-2 bg-green-500/10 hover:bg-green-500 text-green-600 hover:text-white rounded-xl transition-colors active:scale-95"
+                                  title="Selesaikan Laporan (Selesai)"
+                                >
+                                  <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>

@@ -13,11 +13,15 @@ export default async function BuatLaporanPage() {
     redirect('/auth');
   }
 
+  if ((session.user as any).role === 'ADMIN') {
+    redirect('/admin');
+  }
+
   return (
     <>
       <Header />
       <BuatLaporanClient />
-      <Footer />
+      <Footer role={(session?.user as any)?.role || "GUEST"} />
     </>
   );
 }

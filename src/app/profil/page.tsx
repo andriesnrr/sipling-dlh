@@ -76,7 +76,7 @@ export default async function ProfilPage() {
           verifikasi: totalLaporan - totalSelesai - totalProses
         }}
       />
-      <Footer />
+      <Footer role={dbUser.role || "GUEST"} />
     </>
   );
 }

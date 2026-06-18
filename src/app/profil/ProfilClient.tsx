@@ -95,24 +95,26 @@ export default function ProfilClient({ user, stats }: ProfilClientProps) {
         </div>
 
         {/* Statistics Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-outline-variant)] text-center">
-            <p className="text-[28px] font-extrabold text-[var(--color-on-surface)]">{stats.total}</p>
-            <p className="text-[12px] text-[var(--color-on-surface-variant)] font-semibold">Total Aduan</p>
+        {user.role !== "ADMIN" && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-outline-variant)] text-center">
+              <p className="text-[28px] font-extrabold text-[var(--color-on-surface)]">{stats.total}</p>
+              <p className="text-[12px] text-[var(--color-on-surface-variant)] font-semibold">Total Aduan</p>
+            </div>
+            <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-outline-variant)] text-center">
+              <p className="text-[28px] font-extrabold text-yellow-600">{stats.verifikasi}</p>
+              <p className="text-[12px] text-[var(--color-on-surface-variant)] font-semibold">Verifikasi</p>
+            </div>
+            <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-outline-variant)] text-center">
+              <p className="text-[28px] font-extrabold text-blue-600">{stats.proses}</p>
+              <p className="text-[12px] text-[var(--color-on-surface-variant)] font-semibold">Diproses</p>
+            </div>
+            <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-outline-variant)] text-center">
+              <p className="text-[28px] font-extrabold text-green-600">{stats.selesai}</p>
+              <p className="text-[12px] text-[var(--color-on-surface-variant)] font-semibold">Selesai</p>
+            </div>
           </div>
-          <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-outline-variant)] text-center">
-            <p className="text-[28px] font-extrabold text-yellow-600">{stats.verifikasi}</p>
-            <p className="text-[12px] text-[var(--color-on-surface-variant)] font-semibold">Verifikasi</p>
-          </div>
-          <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-outline-variant)] text-center">
-            <p className="text-[28px] font-extrabold text-blue-600">{stats.proses}</p>
-            <p className="text-[12px] text-[var(--color-on-surface-variant)] font-semibold">Diproses</p>
-          </div>
-          <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-outline-variant)] text-center">
-            <p className="text-[28px] font-extrabold text-green-600">{stats.selesai}</p>
-            <p className="text-[12px] text-[var(--color-on-surface-variant)] font-semibold">Selesai</p>
-          </div>
-        </div>
+        )}
 
         {/* Profile Form Details */}
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-outline-variant)] space-y-6">
