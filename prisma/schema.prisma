@@ -1,0 +1,125 @@
+// Combined Prisma schema untuk DLH Gresik & SIPLING
+// Jalankan: npx prisma generate && npx prisma db push
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// === MODELS FROM WEBSITE DLH (GRESIK) ===
+
+model KategoriBerita {
+  id     Int      @id @default(autoincrement())
+  nama   String
+  slug   String   @unique
+  berita Berita[]
+}
+
+model Berita {
+  id               Int              @id @default(autoincrement())
+  judul            String
+  slug             String           @unique
+  isi              String           @db.Text
+  ringkasan        String?
+  gambar           String?
+  tanggalPublikasi DateTime
+  isPublished      Boolean          @default(true)
+  kategori         KategoriBerita?  @relation(fields: [kategoriId], references: [id], onDelete: SetNull)
+  kategoriId       Int?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model Pengaduan {
+  id           Int      @id @default(autoincrement())
+  namaLengkap  String
+  nik          String
+  email        String
+  noWhatsapp   String
+  kategori     String
+  isiPengaduan String   @db.Text
+  bukti        String?
+  tanggalMasuk DateTime @default(now())
+  status       String   @default("diterima")
+  catatanAdmin String?  @db.Text
+}
+
+model PejabatStruktur {
+  id       Int     @id @default(autoincrement())
+  nama     String
+  jabatan  String
+  level    String
+  foto     String?
+  urutan   Int     @default(0)
+  isActive Boolean @default(true)
+}
+
+model Dokumen {
+  id            Int      @id @default(autoincrement())
+  namaDokumen   String
+  tahun         Int
+  kategori      String
+  filePdf       String
+  deskripsi     String?  @db.Text
+  isActive      Boolean  @default(true)
+  tanggalUpload DateTime @default(now())
+}
+
+model FotoGaleri {
+  id        Int      @id @default(autoincrement())
+  judul     String
+  gambar    String
+  deskripsi String?
+  tanggal   DateTime
+  isActive  Boolean  @default(true)
+}
+
+model AdminUser {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+  email    String
+}
+
+model PageView {
+  id        Int      @id @default(autoincrement())
+  sessionId String
+  path      String
+  timestamp DateTime @default(now())
+}
+
+model ActiveSession {
+  id        String   @id
+  lastSeen  DateTime @default(now())
+}
+
+// === NEW MODELS FOR SIPLING ===
+
+model SiplingUser {
+  id        String           @id @default(uuid())
+  name      String
+  email     String           @unique
+  password  String
+  phone     String?
+  role      String           @default("USER") // USER | ADMIN
+  laporan   SiplingLaporan[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model SiplingLaporan {
+  id        String      @id @default(uuid())
+  kategori  String
+  lokasi    String
+  deskripsi String      @db.Text
+  status    String      @default("Verifikasi") // Verifikasi | Proses | Selesai
+  foto      String?     // Storing array of image URLs as string (JSON)
+  user      SiplingUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
