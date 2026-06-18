@@ -16,7 +16,25 @@ export async function POST(req: Request) {
       );
     }
 
-    const userId = (session.user as any).id;
+    let userId = (session.user as any).id;
+
+    if (!userId && session.user.email) {
+      const dbUser = await prisma.siplingUser.findUnique({
+        where: { email: session.user.email },
+        select: { id: true },
+      });
+      if (dbUser) {
+        userId = dbUser.id;
+      }
+    }
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'ID Pengguna tidak ditemukan. Silakan masuk kembali.' },
+        { status: 401 }
+      );
+    }
+
     const formData = await req.formData();
     const kategori = formData.get('kategori') as string;
     const lokasi = formData.get('lokasi') as string;
@@ -30,17 +48,24 @@ export async function POST(req: Request) {
     }
 
     // Process file uploads (Hybrid: Vercel Blob in Prod, local public/uploads in Local Dev)
-    const files = formData.getAll('files') as File[];
+    const files = formData.getAll('files') as (File | string)[];
     const savedFileUrls: string[] = [];
 
-    if (files && files.length > 0) {
+    // Filter to only include valid File objects with size > 0
+    const validFiles = files.filter(
+      (file): file is File => 
+        typeof file !== 'string' && 
+        file !== null && 
+        typeof file.arrayBuffer === 'function' && 
+        file.size > 0
+    );
+
+    if (validFiles.length > 0) {
       const hasBlobToken = !!process.env.BLOB_READ_WRITE_TOKEN;
 
       if (hasBlobToken) {
         // Vercel Blob Upload
-        for (const file of files) {
-          if (file.size === 0) continue;
-          
+        for (const file of validFiles) {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
           const fileExt = file.name.split('.').pop();
           const filename = `sipling-${uniqueSuffix}.${fileExt}`;
@@ -53,9 +78,7 @@ export async function POST(req: Request) {
         const uploadDir = join(process.cwd(), 'public', 'uploads');
         await mkdir(uploadDir, { recursive: true });
 
-        for (const file of files) {
-          if (file.size === 0) continue;
-          
+        for (const file of validFiles) {
           const bytes = await file.arrayBuffer();
           const buffer = Buffer.from(bytes);
 
@@ -88,7 +111,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error('Laporan Create Error:', error);
     return NextResponse.json(
-      { error: 'Terjadi kesalahan internal server.' },
+      { error: `Terjadi kesalahan internal server: ${error.message || error}` },
       { status: 500 }
     );
   }
