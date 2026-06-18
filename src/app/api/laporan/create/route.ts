@@ -74,6 +74,11 @@ export async function POST(req: Request) {
           savedFileUrls.push(blob.url);
         }
       } else {
+        // Check if running on Vercel serverless environment
+        if (process.env.VERCEL === '1') {
+          throw new Error('Penyimpanan lokal tidak didukung di Vercel. Silakan hubungkan Vercel Blob di dashboard Vercel proyek Anda (Tab Storage -> Connect Database/Blob) untuk mengaktifkan unggah gambar.');
+        }
+
         // Local Disk Upload Fallback
         const uploadDir = join(process.cwd(), 'public', 'uploads');
         await mkdir(uploadDir, { recursive: true });
