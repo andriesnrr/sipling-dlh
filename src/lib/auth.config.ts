@@ -26,8 +26,12 @@ export const authConfig = {
       const isAdminPath = nextUrl.pathname.startsWith('/admin');
       const isAuthPage = nextUrl.pathname === '/auth';
 
-      if (isLaporanPath && !isLoggedIn) {
-        return false; // Automatically redirects to /auth
+      if (isLaporanPath) {
+        if (!isLoggedIn) return false; // Automatically redirects to /auth
+        const userRole = (auth?.user as any)?.role;
+        if (userRole === 'ADMIN') {
+          return NextResponse.redirect(new URL('/admin', nextUrl));
+        }
       }
 
       if (isAdminPath) {
