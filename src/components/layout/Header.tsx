@@ -21,7 +21,7 @@ export default async function Header() {
           <Link href="/lacak" className="text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-variant)] transition-colors px-3 py-2 rounded-lg text-[14px] leading-[20px] font-[family-name:var(--font-inter)] font-semibold">
             Lacak Laporan
           </Link>
-          {isLoggedIn ? (
+          {isLoggedIn && (
             <>
               {!isAdmin && (
                 <>
@@ -39,10 +39,6 @@ export default async function Header() {
                 </Link>
               )}
             </>
-          ) : (
-            <Link href="/auth" className="text-[var(--color-primary)] bg-[var(--color-primary)]/5 hover:bg-[var(--color-primary)]/10 transition-colors px-3 py-2 rounded-lg text-[14px] leading-[20px] font-[family-name:var(--font-inter)] font-bold">
-              Masuk / Daftar
-            </Link>
           )}
         </nav>
         <div className="flex items-center gap-3">
@@ -56,10 +52,10 @@ export default async function Header() {
           ) : (
             <Link 
               href="/auth" 
-              className="material-symbols-outlined text-[var(--color-on-surface-variant)] p-2 hover:bg-[var(--color-surface-variant)] rounded-full transition-all flex items-center justify-center cursor-pointer"
-              title="Masuk akun"
+              className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-container)] transition-all px-5 py-2.5 rounded-xl text-[14px] leading-[20px] font-[family-name:var(--font-inter)] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
             >
-              login
+              <span className="material-symbols-outlined text-[18px]">login</span>
+              Masuk / Daftar
             </Link>
           )}
         </div>
