@@ -62,60 +62,20 @@ export default async function Home() {
     },
   });
 
-  // Map database reports or fall back to mock data if empty
-  const hasReports = recentLaporanDb.length > 0;
-  
-  const recentLaporan = hasReports 
-    ? recentLaporanDb.map((l) => {
-        const fotos = l.foto ? JSON.parse(l.foto) : [];
-        const imageUrl = fotos.length > 0 ? fotos[0] : (categoryImages[l.kategori] || categoryImages.lainnya);
-        return {
-          id: l.id,
-          kategori: categoryNames[l.kategori] || l.kategori,
-          lokasi: l.lokasi,
-          deskripsi: l.deskripsi,
-          status: l.status,
-          image: imageUrl,
-          waktu: formatRelativeTime(l.createdAt),
-          pelapor: l.user.name,
-          isMock: false,
-        };
-      })
-    : [
-        {
-          id: "mock-1",
-          kategori: "Penumpukan Sampah",
-          lokasi: "Menteng, Jakarta Pusat",
-          deskripsi: "Sampah menumpuk sejak pagi hari dan mengganggu pejalan kaki serta mengeluarkan bau tidak sedap.",
-          status: "Selesai",
-          image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDaYyQYjvH7Mb3TIRlpB-DKYuGM_eE5XSPk4ENN43ygnd_GIuLSOsjoaE8gBQSbPn8hjwSspsUM5OZmhVYrSeOmyJPFqsBmW-syC4Tq-ONIS33LUhwyD4gY7CZ_kmkhh8fKcdMRn0QaK55KT9GEi7tzqeATWcwtKFg7gcwIC8O55mOXyDclXm78gsNOr8OMkUWL_GMSHyqnmOX2zxSdQuuMtvrgGsM1DfFfB2sH66HM_btg2s8_8bf3i0QvyyAzDfwFccqTUZUl7g",
-          waktu: "Contoh Laporan • Menteng",
-          pelapor: "Admin",
-          isMock: true,
-        },
-        {
-          id: "mock-2",
-          kategori: "Drainase / Saluran Air",
-          lokasi: "Gambir, Jakarta Pusat",
-          deskripsi: "Ditemukan sumbatan plastik dan sedimen lumpur yang mengakibatkan genangan saat hujan lebat.",
-          status: "Proses",
-          image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAoWwkROqHY6RSIcn1HPl8w_0S_O1lbEsQwhTvBalh-YIdVvu6w87BQM3lLPDXxzJIHJ-NmsrKnbdt8xxVedmhPsxdwuhofFgfA2PY-LRzu2EY8p1UPKJnd7sPZqKF4JF7_--53y5_nGW9wy-pqeqj2R5mBks_HxGz1pBhk1aCwACXNuHAcW-Jns5XO_Y0tfHHifV29dgd_U0ZN6d6alGdCnsT59E5P_rydWiVzcamhCCO-j84-oxCAMkyXkQmK96DTiVCcgEuONw",
-          waktu: "Contoh Laporan • Gambir",
-          pelapor: "Admin",
-          isMock: true,
-        },
-        {
-          id: "mock-3",
-          kategori: "Pohon Rawan Tumbang",
-          lokasi: "Senayan, Jakarta Pusat",
-          deskripsi: "Pohon peneduh di area Senayan miring dan berpotensi tumbang jika terjadi angin kencang.",
-          status: "Verifikasi",
-          image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2M5Vyl0ztBIHbklFabG33PnyWBLuJMqg6q7RYxJOR1XYZhUEZjt_nrZ06wOzDLOTn-uX9SUbUN3g5t2BChBou5rahLzBvx3GLLt3PEzQibabGPxBgNtnHeXZD6ZISCW9QTmXmj314XfqqcVUytLs4KyGMx5AMZ0ZmsMiy8EPwNlxbYR-csKyRP-sBichAbO8-Pw05JxGamhDsCQHBgwFPjviaVLxvxswmxfEGA1VU0bEcY5e32DwP61lLa2_4AcVqjYflzTqD6Q",
-          waktu: "Contoh Laporan • Senayan",
-          pelapor: "Admin",
-          isMock: true,
-        },
-      ];
+  const recentLaporan = recentLaporanDb.map((l) => {
+    const fotos = l.foto ? JSON.parse(l.foto) : [];
+    const imageUrl = fotos.length > 0 ? fotos[0] : (categoryImages[l.kategori] || categoryImages.lainnya);
+    return {
+      id: l.id,
+      kategori: categoryNames[l.kategori] || l.kategori,
+      lokasi: l.lokasi,
+      deskripsi: l.deskripsi,
+      status: l.status,
+      image: imageUrl,
+      waktu: formatRelativeTime(l.createdAt),
+      pelapor: l.user.name,
+    };
+  });
 
   return (
     <>
@@ -175,7 +135,7 @@ export default async function Home() {
                 <span className="material-symbols-outlined text-[var(--color-primary)] text-[24px]">assignment</span>
                 <div>
                   <p className="text-[24px] leading-[32px] font-bold text-[var(--color-on-surface)]">
-                    {hasReports ? totalLaporan.toLocaleString('id-ID') : "1.248"}
+                    {totalLaporan.toLocaleString('id-ID')}
                   </p>
                   <p className="text-[var(--color-on-surface-variant)] text-[14px] leading-[20px]">Total Laporan</p>
                 </div>
@@ -184,7 +144,7 @@ export default async function Home() {
                 <span className="material-symbols-outlined text-[var(--color-primary-container)] text-[24px]">check_circle</span>
                 <div>
                   <p className="text-[24px] leading-[32px] font-bold text-[var(--color-on-surface)]">
-                    {hasReports ? laporanSelesai.toLocaleString('id-ID') : "942"}
+                    {laporanSelesai.toLocaleString('id-ID')}
                   </p>
                   <p className="text-[var(--color-on-surface-variant)] text-[14px] leading-[20px]">Laporan Selesai</p>
                 </div>
@@ -193,7 +153,7 @@ export default async function Home() {
                 <span className="material-symbols-outlined text-[var(--color-secondary)] text-[24px]">pending</span>
                 <div>
                   <p className="text-[24px] leading-[32px] font-bold text-[var(--color-on-surface)]">
-                    {hasReports ? laporanDiproses.toLocaleString('id-ID') : "156"}
+                    {laporanDiproses.toLocaleString('id-ID')}
                   </p>
                   <p className="text-[var(--color-on-surface-variant)] text-[14px] leading-[20px]">Laporan Diproses</p>
                 </div>
@@ -202,7 +162,7 @@ export default async function Home() {
                 <span className="material-symbols-outlined text-[var(--color-tertiary)] text-[24px]">groups</span>
                 <div>
                   <p className="text-[24px] leading-[32px] font-bold text-[var(--color-on-surface)]">
-                    {totalWarga > 0 ? (5000 + totalWarga).toLocaleString('id-ID') : "5.000+"}
+                    {totalWarga.toLocaleString('id-ID')}
                   </p>
                   <p className="text-[var(--color-on-surface-variant)] text-[14px] leading-[20px]">Masyarakat Terlayani</p>
                 </div>
@@ -269,57 +229,71 @@ export default async function Home() {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {recentLaporan.map((item) => (
-                <div key={item.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm border border-[var(--color-outline-variant)] overflow-hidden group hover:shadow-md transition-all flex flex-col h-full">
-                  <div className="h-48 relative overflow-hidden bg-gray-100">
-                    <img 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                      alt={item.kategori} 
-                      src={item.image} 
-                    />
-                    <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[12px] leading-[16px] font-bold ${
-                      item.status === "Selesai" 
-                        ? "bg-green-500/15 text-green-700 border border-green-500/20" 
-                        : item.status === "Proses" 
-                          ? "bg-blue-500/15 text-blue-700 border border-blue-500/20" 
-                          : "bg-yellow-500/15 text-yellow-700 border border-yellow-500/20"
-                    }`}>
-                      {item.status}
-                    </div>
-                  </div>
-                  <div className="p-6 flex flex-col flex-grow justify-between">
-                    <div>
-                      <p className="text-[var(--color-on-surface-variant)] text-[12px] leading-[16px] mb-2 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[14px]">schedule</span>
-                        {item.waktu}
-                      </p>
-                      <h3 className="text-[16px] leading-[24px] font-bold text-[var(--color-on-surface)] mb-2 font-[family-name:var(--font-plus-jakarta-sans)] line-clamp-1">
-                        {item.kategori} di {item.lokasi.split(",")[0]}
-                      </h3>
-                      <p className="text-[14px] leading-[20px] text-[var(--color-on-surface-variant)] line-clamp-2">
-                        {item.deskripsi}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-[var(--color-outline-variant)] flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed)] flex items-center justify-center font-bold text-[11px] uppercase">
-                          {item.pelapor.slice(0, 2)}
-                        </div>
-                        <span className="text-[12px] text-[var(--color-on-surface-variant)] font-medium">
-                          Oleh {item.pelapor}
-                        </span>
-                      </div>
-                      <Link 
-                        href={item.isMock ? `/lacak` : `/lacak?id=${item.id}`} 
-                        className="text-[12px] leading-[16px] font-bold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
-                      >
-                        Lacak Detail
-                        <span className="material-symbols-outlined text-[14px]">arrow_right_alt</span>
-                      </Link>
-                    </div>
-                  </div>
+              {recentLaporan.length === 0 ? (
+                <div className="col-span-1 md:col-span-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] rounded-2xl p-12 text-center shadow-sm">
+                  <span className="material-symbols-outlined text-[48px] text-[var(--color-on-surface-variant)] opacity-40 mb-3">folder_open</span>
+                  <h3 className="text-[18px] font-bold text-[var(--color-on-surface)] mb-2 font-[family-name:var(--font-plus-jakarta-sans)]">Belum Ada Laporan Masuk</h3>
+                  <p className="text-[14px] text-[var(--color-on-surface-variant)] max-w-md mx-auto mb-6">
+                    Database pengaduan saat ini masih kosong. Bantu kami menjaga kebersihan kota dengan mengirimkan aduan lingkungan pertama Anda.
+                  </p>
+                  <Link href="/laporan/buat" className="bg-[var(--color-primary)] text-white font-bold px-6 py-2.5 rounded-xl hover:bg-[var(--color-primary-container)] transition-all active:scale-95 inline-flex items-center gap-2 shadow-sm">
+                    <span className="material-symbols-outlined text-[20px]">add_circle</span>
+                    Mulai Laporan Pertama
+                  </Link>
                 </div>
-              ))}
+              ) : (
+                recentLaporan.map((item) => (
+                  <div key={item.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm border border-[var(--color-outline-variant)] overflow-hidden group hover:shadow-md transition-all flex flex-col h-full">
+                    <div className="h-48 relative overflow-hidden bg-gray-100">
+                      <img 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        alt={item.kategori} 
+                        src={item.image} 
+                      />
+                      <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[12px] leading-[16px] font-bold ${
+                        item.status === "Selesai" 
+                          ? "bg-green-500/15 text-green-700 border border-green-500/20" 
+                          : item.status === "Proses" 
+                            ? "bg-blue-500/15 text-blue-700 border border-blue-500/20" 
+                            : "bg-yellow-500/15 text-yellow-700 border border-yellow-500/20"
+                      }`}>
+                        {item.status}
+                      </div>
+                    </div>
+                    <div className="p-6 flex flex-col flex-grow justify-between">
+                      <div>
+                        <p className="text-[var(--color-on-surface-variant)] text-[12px] leading-[16px] mb-2 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px]">schedule</span>
+                          {item.waktu}
+                        </p>
+                        <h3 className="text-[16px] leading-[24px] font-bold text-[var(--color-on-surface)] mb-2 font-[family-name:var(--font-plus-jakarta-sans)] line-clamp-1">
+                          {item.kategori} di {item.lokasi.split(",")[0]}
+                        </h3>
+                        <p className="text-[14px] leading-[20px] text-[var(--color-on-surface-variant)] line-clamp-2">
+                          {item.deskripsi}
+                        </p>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-[var(--color-outline-variant)] flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed)] flex items-center justify-center font-bold text-[11px] uppercase">
+                            {item.pelapor.slice(0, 2)}
+                          </div>
+                          <span className="text-[12px] text-[var(--color-on-surface-variant)] font-medium">
+                            Oleh {item.pelapor}
+                          </span>
+                        </div>
+                        <Link 
+                          href={`/lacak?id=${item.id}`} 
+                          className="text-[12px] leading-[16px] font-bold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
+                        >
+                          Lacak Detail
+                          <span className="material-symbols-outlined text-[14px]">arrow_right_alt</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </section>
