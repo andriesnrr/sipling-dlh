@@ -4,6 +4,8 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 // Category mappings for displaying in UI
 const categoryNames: Record<string, string> = {
   sampah: "Penumpukan Sampah",
