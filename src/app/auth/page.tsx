@@ -306,7 +306,8 @@ export default function AuthPage() {
             </div>
           </div>
 
-          {/* Social/Government Link Login */}
+          {/* Social/Government Link Login (Temporarily hidden) */}
+          {/*
           <div className="mt-[24px] flex flex-col items-center gap-[16px]">
             <div className="flex items-center w-full gap-[16px]">
               <div className="h-[1px] bg-[var(--color-outline-variant)] flex-grow"></div>
@@ -330,6 +331,7 @@ export default function AuthPage() {
               </button>
             </div>
           </div>
+          */}
 
           {/* Support Footer */}
           <footer className="mt-[48px] text-center">
