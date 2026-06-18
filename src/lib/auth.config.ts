@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { NextResponse } from 'next/server';
 
 export const authConfig = {
   pages: {
@@ -26,22 +27,23 @@ export const authConfig = {
       const isAuthPage = nextUrl.pathname === '/auth';
 
       if (isLaporanPath && !isLoggedIn) {
-        return Response.redirect(new URL('/auth', nextUrl));
+        return false; // Automatically redirects to /auth
       }
 
       if (isAdminPath) {
+        if (!isLoggedIn) return false; // Automatically redirects to /auth
         const userRole = (auth?.user as any)?.role;
-        if (!isLoggedIn || userRole !== 'ADMIN') {
-          return Response.redirect(new URL('/auth', nextUrl));
+        if (userRole !== 'ADMIN') {
+          return NextResponse.redirect(new URL('/', nextUrl));
         }
       }
 
       if (isAuthPage && isLoggedIn) {
         const userRole = (auth?.user as any)?.role;
         if (userRole === 'ADMIN') {
-          return Response.redirect(new URL('/admin', nextUrl));
+          return NextResponse.redirect(new URL('/admin', nextUrl));
         }
-        return Response.redirect(new URL('/', nextUrl));
+        return NextResponse.redirect(new URL('/', nextUrl));
       }
 
       return true;
