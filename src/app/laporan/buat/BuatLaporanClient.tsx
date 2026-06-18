@@ -60,6 +60,43 @@ export default function BuatLaporanClient() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Browser Anda tidak mendukung layanan lokasi.");
+      return;
+    }
+
+    setFormData(prev => ({ ...prev, lokasi: "Mengambil lokasi terkini..." }));
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          // Reverse geocode using OpenStreetMap Nominatim API (free, no API key needed)
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&accept-language=id`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const address = data.display_name || `${latitude}, ${longitude}`;
+            setFormData(prev => ({ ...prev, lokasi: address }));
+          } else {
+            setFormData(prev => ({ ...prev, lokasi: `${latitude}, ${longitude}` }));
+          }
+        } catch (error) {
+          console.error("Reverse geocoding failed:", error);
+          setFormData(prev => ({ ...prev, lokasi: `${latitude}, ${longitude}` }));
+        }
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        alert("Gagal mengambil lokasi. Pastikan Anda mengizinkan akses lokasi di browser Anda.");
+        setFormData(prev => ({ ...prev, lokasi: "" }));
+      },
+      { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 }
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.kategori || !formData.lokasi || !formData.deskripsi) {
@@ -151,7 +188,7 @@ export default function BuatLaporanClient() {
                 </div>
                 <button 
                   type="button" 
-                  onClick={() => setFormData(prev => ({ ...prev, lokasi: "Jalan Veteran No. 12, Gresik (Lokasi Saya)" }))}
+                  onClick={handleGetLocation}
                   className="bg-[var(--color-surface-variant)] hover:bg-[var(--color-surface-dim)] text-[var(--color-on-surface)] px-4 py-3 rounded-xl flex items-center justify-center transition-colors border border-[var(--color-outline-variant)]"
                   title="Gunakan Lokasi Saat Ini"
                 >
